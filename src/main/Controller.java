@@ -1,8 +1,11 @@
 package main;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -10,10 +13,15 @@ public class Controller
 {
     String[] numbers = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     String[] operands = {"%", "/", "*", "-", "+"};
-    String[] special = {"(", ")", "C", "="};
+    String[] special = {"(", ")", "C", "=", "BACK"};
     String decimal = ".";
 
     boolean resultDisplayed = false;
+
+    public void initialize()
+    {
+        System.out.println("Initialized.");
+    }
 
     public void addCharacter(TextField textField, String character)
     {
@@ -73,8 +81,26 @@ public class Controller
                 textField.setText(String.valueOf(result));
                 resultDisplayed = true;
             }
-            else
+            else if (text.equals("BACK") && textField.getText().length() > 0)
+            {
+                textField.setText(textField.getText().substring(0, textField.getText().length() - 1));
+            }
+            else if (text.equals("(") || text.equals(")"))
                 addCharacter(textField, text);
         }
+    }
+
+    public void keypress(KeyEvent event)
+    {
+        Node node = (Node) event.getSource();
+        Scene scene = node.getScene();
+        KeyCode code = event.getCode();
+
+        if (code == KeyCode.ENTER)
+            handleInput("=", scene);
+        else if (code == KeyCode.BACK_SPACE)
+            handleInput("BACK", scene);
+        else
+            handleInput(event.getText().toUpperCase(), scene);
     }
 }
