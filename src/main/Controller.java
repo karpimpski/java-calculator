@@ -15,13 +15,7 @@ public class Controller
     String[] operands = {"%", "/", "*", "-", "+"};
     String[] special = {"(", ")", "C", "=", "BACK"};
     String decimal = ".";
-
     boolean resultDisplayed = false;
-
-    public void initialize()
-    {
-        System.out.println("Initialized.");
-    }
 
     public void addCharacter(TextField textField, String character)
     {
@@ -68,14 +62,17 @@ public class Controller
         if (contains(numbers, text))
             addCharacter(textField, text);
         if (contains(operands, text) && !contains(operands, lastCharacter) && textField.getText().length() > 0)
+        {
+            resultDisplayed = false;
             addCharacter(textField, text);
+        }
         if (text.equals(decimal) && !decimal.equals(lastCharacter))
             addCharacter(textField, text);
         if (contains(special, text))
         {
             if (text.equals("C"))
                 clearText(textField);
-            else if (text.equals("="))
+            else if (text.equals("=") && textField.getText().length() > 0)
             {
                 double result = new ExpressionBuilder(textField.getText()).build().evaluate();
                 textField.setText(String.valueOf(result));
@@ -100,6 +97,7 @@ public class Controller
             handleInput("=", scene);
         else if (code == KeyCode.BACK_SPACE)
             handleInput("BACK", scene);
+
         else
             handleInput(event.getText().toUpperCase(), scene);
     }
